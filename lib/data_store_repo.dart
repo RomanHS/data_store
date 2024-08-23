@@ -19,7 +19,7 @@ class DataStoreRepoEmpty<TUid, TUids, TValue> implements DataStoreRepo<TUid, TUi
   Future<void> put(TValue value) async {}
 
   @override
-  Future<void> putAll(Iterable<TValue> values) async {}
+  Future<void> putAll(List<TValue> values) async {}
 
   @override
   Future<void> delete(TUid uid) async {}
