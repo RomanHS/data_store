@@ -4,18 +4,18 @@ import 'package:data_store/action.dart';
 import 'package:data_store/store_ram.dart';
 import 'package:data_store/data_store_repo.dart';
 
-class DataStore<TUid, TUids, TValue> {
-  final DataStoreRepo<TUid, TUids, TValue> _repo;
+class DataStore<TUid, TUids, TValue, TArgs> {
+  final DataStoreRepo<TUid, TUids, TValue, TArgs> _repo;
   final StoreRAM<TUid, TUids, TValue> _store;
 
   const DataStore({
-    required DataStoreRepo<TUid, TUids, TValue> repo,
+    required DataStoreRepo<TUid, TUids, TValue, TArgs> repo,
     required StoreRAM<TUid, TUids, TValue> store,
   })  : _repo = repo,
         _store = store;
 
   DataStore.create({
-    required DataStoreRepo<TUid, TUids, TValue> repo,
+    required DataStoreRepo<TUid, TUids, TValue, TArgs> repo,
     required List<TValue> values,
     required TUid Function(TValue) getUid,
     Iterable<TUids> Function(TValue)? getUids,
@@ -54,19 +54,20 @@ class DataStore<TUid, TUids, TValue> {
 
   int getLengthType<TTValue extends TValue>() => _store.getLengthType<TTValue>();
 
-  Action put(TValue value) => Action(goToDB: () => _repo.put(value), goToRAM: () => _store.put(value));
+  Action put(TValue value, TArgs args) => Action(goToDB: () => _repo.put(value, args), goToRAM: () => _store.put(value));
 
-  Action putAll(List<TValue> values) => Action(goToDB: () => _repo.putAll(values), goToRAM: () => _store.putAll(values));
+  Action putAll(List<TValue> values, TArgs args) => Action(goToDB: () => _repo.putAll(values, args), goToRAM: () => _store.putAll(values));
 
-  Action delete(TUid uid) => Action(goToDB: () => _repo.delete(uid), goToRAM: () => _store.delete(uid));
+  Action delete(TUid uid, TArgs args) => Action(goToDB: () => _repo.delete(uid, args), goToRAM: () => _store.delete(uid));
 
-  Action deleteAll(List<TUid> uids) => Action(goToDB: () => _repo.deleteAll(uids), goToRAM: () => _store.deleteAll(uids));
+  Action deleteAll(List<TUid> uids, TArgs args) => Action(goToDB: () => _repo.deleteAll(uids, args), goToRAM: () => _store.deleteAll(uids));
 
-  Action deleteValues(TUids uids) => Action(goToDB: () => _repo.deleteValues(uids), goToRAM: () => _store.deleteValues(uids));
+  Action deleteValues(TUids uids, TArgs args) => Action(goToDB: () => _repo.deleteValues(uids, args), goToRAM: () => _store.deleteValues(uids));
 
-  Action deleteAllValues(List<TUids> uids) => Action(goToDB: () => _repo.deleteAllValues(uids), goToRAM: () => _store.deleteAllValues(uids));
+  Action deleteAllValues(List<TUids> uids, TArgs args) =>
+      Action(goToDB: () => _repo.deleteAllValues(uids, args), goToRAM: () => _store.deleteAllValues(uids));
 
-  Action clear() => Action(goToDB: () => _repo.clear(), goToRAM: () => _store.clear());
+  Action clear(TArgs args) => Action(goToDB: () => _repo.clear(args), goToRAM: () => _store.clear());
 
   Future<void> dispose() => _store.dispose();
 }
